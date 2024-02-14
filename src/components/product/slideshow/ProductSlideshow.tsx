@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Swiper as SwiperObject } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, FreeMode, Navigation, Thumbs } from 'swiper/modules';
-
+import { ProductImage } from '../product-image/ProductImage';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
@@ -47,8 +47,8 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
             >
                 {images.map(image => (
                     <SwiperSlide key={image}>
-                        <Image
-                            src={`/products/${image}`}
+                        <ProductImage
+                            src={image}
                             width={1024}
                             height={800}
                             alt={title}
@@ -68,8 +68,8 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
             >
                 {images.map(image => (
                     <SwiperSlide key={image}>
-                        <Image
-                            src={`/products/${image}`}
+                        <ProductImage
+                            src={image}
                             width={300}
                             height={300}
                             alt={title}

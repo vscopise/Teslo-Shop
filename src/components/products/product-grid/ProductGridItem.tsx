@@ -18,7 +18,7 @@ export const ProductGridItem = ({ product }: Props) => {
 
             <Link href={`/product/${product.slug}`} title={product.title}>
                 <Image
-                    src={`/products/${displayImage}`}
+                    src={ `/products/${ displayImage }` }
                     alt={product.title}
                     className="w-full object-cover rounded"
                     width={500}

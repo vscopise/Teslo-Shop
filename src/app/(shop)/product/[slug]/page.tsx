@@ -1,13 +1,17 @@
+export const revalidate = 604800;
+
+import { Metadata, ResolvingMetadata } from 'next';
 import { notFound } from 'next/navigation';
+
 
 import {
   ProductMobileSlideshow,
   ProductSlideshow,
-  QuantitySelector,
-  SizeSelector
+  StockLabel
 } from '@/components';
 import { titleFont } from '@/config/fonts';
-import { initialData } from '@/seed/seed';
+import { getProductBySlug } from '@/actions';
+import { AddToCart } from './ui/AddToCart';
 
 interface Props {
   params: {
@@ -15,11 +19,37 @@ interface Props {
   }
 }
 
-export default function ProductPage({ params }: Props) {
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // read route params
+  const slug = params.slug
+
+  // fetch data
+  const product = await getProductBySlug(slug);
+
+  // optionally access and extend (rather than replace) parent metadata
+  //const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: product?.title ?? 'Producto no encontrado',
+    description: product?.description ?? '',
+    openGraph: {
+      title: product?.title ?? 'Producto no encontrado',
+      description: product?.description ?? '',
+      images: [`/products/${product?.images[1]}`],
+    },
+  }
+}
+
+
+export default async function ProductPage({ params }: Props) {
 
   const { slug } = params;
 
-  const product = initialData.products.find(product => product.slug === slug)
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
@@ -32,16 +62,16 @@ export default function ProductPage({ params }: Props) {
       <div className="col-span-1 md:col-span-2">
 
         {/* Desktop */}
-        <ProductSlideshow 
-          images={product.images} 
-          title={product.title} 
+        <ProductSlideshow
+          images={product.images}
+          title={product.title}
           className='hidden sm:block'
         />
 
         {/* Mobile */}
-        <ProductMobileSlideshow 
-          images={product.images} 
-          title={product.title} 
+        <ProductMobileSlideshow
+          images={product.images}
+          title={product.title}
           className='block sm:hidden'
         />
 
@@ -53,23 +83,12 @@ export default function ProductPage({ params }: Props) {
         </h1>
         <p className="text-lg mb-5">${product.price}</p>
 
-        {/* Selector de Tallas */}
-        <SizeSelector
-          selectedSize={product.sizes[0]}
-          availableSizes={product.sizes}
-        />
-
-        {/* Selector de Cantidad */}
-        <QuantitySelector quantity={3} />
-
-        {/* Botón para agregar al carrito */}
-        <button className="btn-primary w-full my-5">
-          Agregar al Carrito
-        </button>
+        <AddToCart product={product} />
 
         {/* Descripción*/}
         <h3 className="font-bold text-sm">Descripción</h3>
         <p className="font-light">{product.description}</p>
+        <StockLabel slug={product.slug} />
       </div>
     </div>
   );
