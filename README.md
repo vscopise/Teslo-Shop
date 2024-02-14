@@ -1,6 +1,6 @@
 # Descripción
 
-Este proyecto fue hecho con el curso "Nex.js El framework de React para producción" de Fernando Herrera en Dev/Talles.
+Este proyecto fue hecho con el curso "Next.js El framework de React para producción" de Fernando Herrera en Dev/Talles.
 
 Se trata de un e-commerce completo, hecho desde cero
 
